@@ -17,10 +17,12 @@ Swagger 文档：http://localhost:19210/api-docs
 
 - /api/vehicles：车辆管理。
 - /api/drivers：司机管理。
-- /api/dispatch-orders：调度派单与状态流转。
+- /api/dispatch-orders：调度派单与状态流转（`/:id/assign` 分派 → `/:id/start` 发车 → `/:id/complete` 收车）。
+  - 发车前提：单据已分派且车辆、司机均为空闲；发车后双方转为运输中。
+  - 收车录入实际到达时间与油费、过路费、人工费，完成后释放双方，利润按实际支出重算。
 - /api/maintenance-records：维保管理。
 - /api/fuel-records：油耗记录。
-- /api/cost-summaries：费用汇总与利润核算。
+- /api/cost-summaries：费用汇总与利润核算。收车后按「同车 + 到达月份」同步实际支出、总收入与利润，同一调度单不重复累计。
 
 ## 本地开发
 
