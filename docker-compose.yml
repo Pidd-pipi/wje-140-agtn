@@ -1,0 +1,52 @@
+name: fleet-api
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: ${COMPOSE_PROJECT_NAME:-fleet-api}-db
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-fleet_api}
+      MYSQL_USER: ${DB_USER:-fleet_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-fleet_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-fleet_root_password}
+    volumes:
+      - fleet_api_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD:-fleet_root_password}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-fleet-api}-redis
+    volumes:
+      - fleet_api_redis:/data
+
+  backend:
+    build: ./backend
+    container_name: ${COMPOSE_PROJECT_NAME:-fleet-api}-backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-fleet_api}
+      DB_USER: ${DB_USER:-fleet_user}
+      DB_PASSWORD: ${DB_PASSWORD:-fleet_password}
+      JWT_SECRET: ${JWT_SECRET:-fleet-api-secret}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  fleet_api_mysql:
+  fleet_api_redis:
