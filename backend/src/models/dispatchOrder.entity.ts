@@ -11,6 +11,9 @@ export class DispatchOrderEntity {
   @Column() planArriveAt!: string;
   @Column({ nullable: true }) actualDepartAt?: string;
   @Column({ nullable: true }) actualArriveAt?: string;
+  @Column('float', { nullable: true }) actualFuelCost?: number;
+  @Column('float', { nullable: true }) actualTollCost?: number;
+  @Column('float', { nullable: true }) laborCost?: number;
   @Column() cargo!: string;
   @Column('float') weight!: number;
   @Column('float') volume!: number;

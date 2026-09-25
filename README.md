@@ -17,7 +17,7 @@ Swagger 文档：http://localhost:19210/api-docs
 
 - /api/vehicles：车辆管理。
 - /api/drivers：司机管理。
-- /api/dispatch-orders：调度派单与状态流转。
+- /api/dispatch-orders：调度派单与状态流转（POST /:id/depart 发车，POST /:id/complete 收车）。
 - /api/maintenance-records：维保管理。
 - /api/fuel-records：油耗记录。
 - /api/cost-summaries：费用汇总与利润核算。

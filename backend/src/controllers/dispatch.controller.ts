@@ -6,4 +6,6 @@ export class DispatchController {
   @Get() findAll() { return this.service.findAll(); }
   @Get(':id') findOne(@Param('id') id: string) { return this.service.findOne(Number(id)); }
   @Post() create(@Body() payload: any) { return this.service.create(payload); }
+  @Post(':id/depart') depart(@Param('id') id: string) { return this.service.depart(Number(id)); }
+  @Post(':id/complete') complete(@Param('id') id: string, @Body() payload: any) { return this.service.complete(Number(id), payload); }
 }
